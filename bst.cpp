@@ -6,7 +6,7 @@
 //  Copyright © 2019 Coy Kwan. All rights reserved.
 //
 
-#include "bst.hpp"
+#include "bst.h"
 
 Bst::Bst()
 {
@@ -14,7 +14,7 @@ Bst::Bst()
     char C ='\0';
     char S[100] = " ";
     pHead = nullptr;
-    MorseTable.open("/Users/coy/Development/CS303Project2/CS303Project2/MorseTable.txt");
+    MorseTable.open("MorseTable.txt");
     while (!MorseTable.eof()) {
         MorseTable >> C;
         MorseTable.getline(S, 100);
@@ -140,4 +140,79 @@ string Bst::search(BstNode * Tree, char c)
     }*/
 
 
+}
+
+string Bst::decode(string morseCode)
+{
+	string decoded;
+	decoded = decode2(pHead, morseCode);
+	return decoded;
+}
+
+string Bst::decode(BstNode * Tree, string morseCode)
+{
+	string decodedString;
+	char decoded;
+	if (Tree != nullptr)
+	{
+		//If a character has been reached, add it to the decoded string
+		//Then start over if there's remaining morse code
+		decoded = Tree -> getChr();
+		decodedString += decoded;
+		decodedString += morseCode;
+
+/*		if(morseCode.size() > 0)
+		{
+			decodedString += decode(pHead, morseCode);
+		}*/
+
+
+	}
+	else
+	{
+		//Otherwise, traverse tree
+		//Visit left child for . and right child for _
+		char compare = morseCode.at(0);
+		morseCode.erase(0);
+		if (compare == '.')
+		{
+			decode(Tree -> getLeft(), morseCode);
+		}
+		else if (compare == '.')
+		{
+			decode(Tree -> getRight(), morseCode);
+		}
+	}
+
+	return decodedString;
+}
+
+string Bst::decode2(BstNode * Tree, string morseCode)
+{
+	string encoded = morseCode;
+	string decodedString;
+	while (encoded.size() > 0)
+	{
+		cout << encoded;
+		encoded.erase(0);
+		BstNode * currentTree = Tree;
+
+		while (currentTree == nullptr)
+		{
+			char compare = morseCode.at(0);
+			encoded = encoded.erase(0);
+			if (compare == '_')
+			{
+				currentTree = currentTree -> getLeft();
+			}
+			else if (compare == '.')
+			{
+				currentTree = currentTree -> getRight();
+			}
+		}
+		char decoded = currentTree -> getChr();
+		decodedString += decoded;
+
+	}
+	return decodedString;
 }
